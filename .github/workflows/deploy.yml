@@ -1,0 +1,26 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main  # Hoặc branch bạn cần deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.AZURE_HOST }}
+        username: ${{ secrets.AZURE_USER }}
+        key: ${{ secrets.AZURE_SSH_KEY }}
+        script: |
+          cd teenup/FullStackTest
+          git pull origin main
+          docker compose up -d --build
+

@@ -1,0 +1,1627 @@
+{
+    "info": {
+        "_postman_id": "teenup-api-collection",
+        "name": "Teenup - Student Management API",
+        "description": "Complete API collection for Teenup Student Management System\n\n🌐 **Base URL:** {{baseUrl}}/api\n\n📋 **Resources:**\n- Parents (Phụ huynh)\n- Students (Học sinh) \n- Classes (Lớp học)\n- Class Registrations (Đăng ký lớp)\n- Subscriptions (Gói học)\n\n🧪 **Testing:**\n- Validation tests for all endpoints\n- Error handling tests\n- Workflow integration tests\n\n📚 **Usage:**\n1. Import this collection into Postman\n2. Set environment variables (baseUrl, port)\n3. Run individual requests or entire folders\n4. Check test results in Test Results tab",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "🔍 Health Check",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response contains status', function () {",
+                            "    pm.expect(pm.response.text()).to.include('OK');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "👥 Parents",
+            "item": [
+                {
+                    "name": "Create Parent",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has success true', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains parent data', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.data).to.have.property('_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('name');",
+                                    "    pm.expect(jsonData.data).to.have.property('phone');",
+                                    "    pm.expect(jsonData.data).to.have.property('email');",
+                                    "});",
+                                    "",
+                                    "// Save parent ID for other requests",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('parentId', jsonData.data._id);",
+                                    "    pm.environment.set('parentName', jsonData.data.name);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Nguyễn Văn An\",\n  \"phone\": \"0123456789\",\n  \"email\": \"an.nguyen@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Second Parent",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Save second parent ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('parentId2', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Trần Thị Bình\",\n  \"phone\": \"0987654321\",\n  \"email\": \"binh.tran@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Parents",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains parents array', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.be.an('array');",
+                                    "    pm.expect(jsonData.data.length).to.be.at.least(1);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Parent by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains parent details', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('_id');",
+                                    "    pm.expect(jsonData.data._id).to.equal(pm.environment.get('parentId'));",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents/{{parentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents",
+                                "{{parentId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Parent",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Parent updated successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.name).to.include('Updated');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Nguyễn Văn An (Updated)\",\n  \"phone\": \"0123456789\",\n  \"email\": \"an.updated@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents/{{parentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents",
+                                "{{parentId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "👨‍🎓 Students",
+            "item": [
+                {
+                    "name": "Create Student",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Student created successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('parent_id');",
+                                    "});",
+                                    "",
+                                    "// Save student ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('studentId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Nguyễn Minh Anh\",\n  \"dob\": \"2010-05-15\",\n  \"gender\": \"female\",\n  \"current_grade\": \"Grade 8\",\n  \"parent_id\": \"{{parentId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Second Student",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Save second student ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('studentId2', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Trần Hoàng Nam\",\n  \"dob\": \"2012-03-22\",\n  \"gender\": \"male\",\n  \"current_grade\": \"Grade 6\",\n  \"parent_id\": \"{{parentId2}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Students",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains students with parent info', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.be.an('array');",
+                                    "    ",
+                                    "    // Check if students have populated parent info",
+                                    "    if (jsonData.data.length > 0) {",
+                                    "        const student = jsonData.data[0];",
+                                    "        pm.expect(student).to.have.property('parent_id');",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Student by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Student details include parent info', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('parent_id');",
+                                    "    pm.expect(jsonData.data._id).to.equal(pm.environment.get('studentId'));",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students/{{studentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students",
+                                "{{studentId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "📚 Classes",
+            "item": [
+                {
+                    "name": "Create Class",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Class created successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('name');",
+                                    "    pm.expect(jsonData.data).to.have.property('day_of_week');",
+                                    "});",
+                                    "",
+                                    "// Save class ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('classId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Toán học cơ bản\",\n  \"subject\": \"Mathematics\",\n  \"day_of_week\": \"monday\",\n  \"time_slot\": \"09:00-10:30\",\n  \"teacher_name\": \"Cô Lan Anh\",\n  \"max_students\": 15\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Second Class",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Save second class ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('classId2', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Tiếng Anh giao tiếp\",\n  \"subject\": \"English\",\n  \"day_of_week\": \"wednesday\",\n  \"time_slot\": \"14:00-15:30\",\n  \"teacher_name\": \"Thầy John Smith\",\n  \"max_students\": 12\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Classes",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains classes array', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Classes by Day",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('All classes are on Monday', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    ",
+                                    "    if (jsonData.data.length > 0) {",
+                                    "        jsonData.data.forEach(cls => {",
+                                    "            pm.expect(cls.day_of_week).to.equal('monday');",
+                                    "        });",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes?day=monday",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ],
+                            "query": [
+                                {
+                                    "key": "day",
+                                    "value": "monday"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Weekly Schedule",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Weekly schedule has correct structure', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('monday');",
+                                    "    pm.expect(jsonData.data).to.have.property('tuesday');",
+                                    "    pm.expect(jsonData.data).to.have.property('wednesday');",
+                                    "    pm.expect(jsonData.data).to.have.property('thursday');",
+                                    "    pm.expect(jsonData.data).to.have.property('friday');",
+                                    "    pm.expect(jsonData.data).to.have.property('saturday');",
+                                    "    pm.expect(jsonData.data).to.have.property('sunday');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes/schedule/week",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes",
+                                "schedule",
+                                "week"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "📝 Class Registrations",
+            "item": [
+                {
+                    "name": "Register Student to Class",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Registration successful', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('class_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('student_id');",
+                                    "    pm.expect(jsonData.data.status).to.equal('active');",
+                                    "});",
+                                    "",
+                                    "// Save registration ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('registrationId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": \"{{studentId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes/{{classId}}/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes",
+                                "{{classId}}",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register Second Student to Different Class",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Second registration successful', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": \"{{studentId2}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes/{{classId2}}/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes",
+                                "{{classId2}}",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Test Duplicate Registration (Should Fail)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 400 (duplicate registration)', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error message indicates duplicate', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "    pm.expect(jsonData.error).to.include('already registered');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": \"{{studentId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes/{{classId}}/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes",
+                                "{{classId}}",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "💳 Subscriptions",
+            "item": [
+                {
+                    "name": "Create Subscription",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('Subscription created successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('student_id');",
+                                    "    pm.expect(jsonData.data).to.have.property('total_sessions');",
+                                    "    pm.expect(jsonData.data.used_sessions).to.equal(0);",
+                                    "    pm.expect(jsonData.data.status).to.equal('active');",
+                                    "});",
+                                    "",
+                                    "// Save subscription ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('subscriptionId', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": \"{{studentId}}\",\n  \"package_name\": \"Gói học 3 tháng\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-04-01\",\n  \"total_sessions\": 24\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Second Subscription",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "// Save second subscription ID",
+                                    "if (pm.response.code === 201) {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.environment.set('subscriptionId2', jsonData.data._id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": \"{{studentId2}}\",\n  \"package_name\": \"Gói học 6 tháng\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-07-01\",\n  \"total_sessions\": 48\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Subscriptions",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains subscriptions array', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Subscription Status",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Status contains subscription details', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data).to.have.property('remaining_sessions');",
+                                    "    pm.expect(jsonData.data).to.have.property('remaining_days');",
+                                    "    pm.expect(jsonData.data).to.have.property('is_usable');",
+                                    "    pm.expect(jsonData.data).to.have.property('subscription');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions/{{subscriptionId}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                "{{subscriptionId}}",
+                                "status"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Use Session #1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Session used successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.used_sessions).to.equal(1);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions/{{subscriptionId}}/use",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                "{{subscriptionId}}",
+                                "use"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Use Session #2",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Second session used successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.used_sessions).to.equal(2);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions/{{subscriptionId}}/use",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                "{{subscriptionId}}",
+                                "use"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Use Session #3",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Third session used successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.used_sessions).to.equal(3);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions/{{subscriptionId}}/use",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                "{{subscriptionId}}",
+                                "use"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check Status After Usage",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Status reflects used sessions', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    pm.expect(jsonData.data.subscription.used_sessions).to.equal(3);",
+                                    "    pm.expect(jsonData.data.remaining_sessions).to.equal(21); // 24 - 3",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions/{{subscriptionId}}/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions",
+                                "{{subscriptionId}}",
+                                "status"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "⚠️ Error Testing",
+            "item": [
+                {
+                    "name": "Invalid Parent Email",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 400 (validation error)', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error message about email validation', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "    pm.expect(jsonData.error).to.include('email');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test User\",\n  \"phone\": \"123\",\n  \"email\": \"invalid-email\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Future Date of Birth (Student)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 400 (validation error)', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error about future date', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Future Student\",\n  \"dob\": \"2030-01-01\",\n  \"gender\": \"male\",\n  \"current_grade\": \"Grade 1\",\n  \"parent_id\": \"{{parentId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Non-existent Parent ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 404', function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error message about not found', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "    pm.expect(jsonData.error).to.include('not found');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents/507f1f77bcf86cd799439011",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents",
+                                "507f1f77bcf86cd799439011"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Invalid Time Slot Format",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 400 (validation error)', function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error message about time slot format', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Class\",\n  \"subject\": \"Test Subject\",\n  \"day_of_week\": \"monday\",\n  \"time_slot\": \"invalid-time-format\",\n  \"teacher_name\": \"Test Teacher\",\n  \"max_students\": 10\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "📊 Statistics & Analytics",
+            "item": [
+                {
+                    "name": "Count All Parents",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Count parents', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    const count = jsonData.count || jsonData.data.length;",
+                                    "    pm.expect(count).to.be.at.least(2);",
+                                    "    ",
+                                    "    // Save count to environment",
+                                    "    pm.environment.set('totalParents', count);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/parents",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "parents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Count All Students",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Count students', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    const count = jsonData.count || jsonData.data.length;",
+                                    "    pm.expect(count).to.be.at.least(2);",
+                                    "    ",
+                                    "    // Save count to environment",
+                                    "    pm.environment.set('totalStudents', count);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/students",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "students"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Count All Classes",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Count classes', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    const count = jsonData.count || jsonData.data.length;",
+                                    "    pm.expect(count).to.be.at.least(2);",
+                                    "    ",
+                                    "    // Save count to environment",
+                                    "    pm.environment.set('totalClasses', count);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/classes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "classes"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Active Subscriptions",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Filter active subscriptions', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.success).to.be.true;",
+                                    "    ",
+                                    "    if (jsonData.data.length > 0) {",
+                                    "        jsonData.data.forEach(sub => {",
+                                    "            pm.expect(sub.status).to.equal('active');",
+                                    "        });",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/subscriptions?status=active",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "subscriptions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "active"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Set default environment variables if not set",
+                    "if (!pm.environment.get('baseUrl')) {",
+                    "    pm.environment.set('baseUrl', 'http://localhost:5000');",
+                    "}",
+                    "",
+                    "// Add timestamp for unique data",
+                    "pm.environment.set('timestamp', Date.now().toString());",
+                    "",
+                    "// Log current request",
+                    "console.log('🚀 Running request:', pm.info.requestName);"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test - check response time",
+                    "pm.test('Response time is acceptable', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "// Global test - check content type for successful requests",
+                    "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                    "    pm.test('Content-Type is application/json', function () {",
+                    "        pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                    "    });",
+                    "}",
+                    "",
+                    "// Log response status",
+                    "console.log('✅ Response status:', pm.response.code, pm.response.status);"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        }
+    ]
+}
